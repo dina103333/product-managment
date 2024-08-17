@@ -19,7 +19,7 @@ This is an API designed for managing users and products. The system is built usi
 
 ### Running the Project
 
-1. Clone the repository to your local machine using `git clone`.
+1. Clone the repository to your local machine using `git clone https://github.com/dina103333/product-managment.git`.
 
 ### Running the Test Cases
 
