@@ -87,9 +87,11 @@ Reset password of user.
 
 ## Users Endpoint
 
+## Show user Endpoint
+
 ### GET ```/api/users/4```
 
-Get user by id.
+Get user data by id.
 
 ## Update user Endpoint
 
