@@ -28,7 +28,16 @@ class UserObserver
      */
     public function updated(User $user): void
     {
-        //
+        if (request()->has('addresses')) {
+            Address::where('user_id', $user->id)->delete();
+            foreach (request()->addresses as $addressData) {
+                Address::create([
+                    'user_id' => $user->id,
+                    'address' => $addressData['address'],
+                    'is_checkpoint' => $addressData['is_checkpoint'] ?? false,
+                ]);
+            }
+        }
     }
 
     /**
@@ -36,7 +45,7 @@ class UserObserver
      */
     public function deleted(User $user): void
     {
-        //
+        Address::where('user_id', $user->id)->delete();
     }
 
     /**
