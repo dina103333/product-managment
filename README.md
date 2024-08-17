@@ -20,7 +20,9 @@ This is an API designed for managing users and products. The system is built usi
 ### Running the Project
 
 1. Clone the repository to your local machine using `git clone https://github.com/dina103333/product-managment.git`.
-2. to run project `docker compose up --build`
+2. Enter to project folder `cd product-managment`
+3. run project by command `docker compose up --build`
+4. featch project base url on port 8060 `http://localhost:8060`
 
 ### Running the Test Cases
 
