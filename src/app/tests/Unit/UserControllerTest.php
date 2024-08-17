@@ -9,16 +9,21 @@ use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Requests\Api\UpdateRequest;
 use App\Http\Resources\Api\UserResource;
+use App\Http\Controllers\Api\UserController;
+use App\Repositories\UserRepositoryInterface;
+use Mockery;
 
 class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
+    protected $userRepositoryMock;
     protected $controller;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->controller = new \App\Http\Controllers\Api\UserController();
+        $this->userRepositoryMock = Mockery::mock(UserRepositoryInterface::class);
+        $this->controller = new UserController($this->userRepositoryMock);
     }
 
     public function test_user_can_be_created()
@@ -133,6 +138,9 @@ class UserControllerTest extends TestCase
     public function test_show_returns_user_when_found()
     {
         $user = User::factory()->create();
+        $this->userRepositoryMock->shouldReceive('findById')
+            ->with($user->id)
+            ->andReturn($user);
 
         $response = $this->controller->show($user->id);
 
@@ -141,14 +149,19 @@ class UserControllerTest extends TestCase
 
         $this->assertIsObject($responseData->data);
         $this->assertEquals($user->id, $responseData->data->id);
-        $this->assertEquals('Data retreved successfully', $responseData->message);
+        $this->assertEquals('Data retrieved successfully', $responseData->message);
     }
 
     public function test_show_returns_not_found_when_user_doesnt_exist()
     {
+        $this->userRepositoryMock->shouldReceive('findById')
+            ->with(999)
+            ->andReturn(null);
+
         $response = $this->controller->show(999);
 
         $this->assertEquals(404, $response->getStatusCode());
+        
         $responseData = json_decode($response->getContent());
 
         $this->assertEquals('User not found.', $responseData->error);
@@ -157,10 +170,20 @@ class UserControllerTest extends TestCase
     public function test_update_returns_updated_user_when_found()
     {
         $user = User::factory()->create();
-        $newName = 'Updated Name';
+        $newName = 'Updated Name'; 
+        $this->userRepositoryMock->shouldReceive('findById')
+            ->with($user->id)
+            ->andReturn($user);
+
+        $this->userRepositoryMock->shouldReceive('update')
+            ->with($user, ['name' => $newName])
+            ->andReturn(true);
 
         $request = new UpdateRequest();
         $request->merge(['name' => $newName]);
+
+        $user->name = $newName;
+        $user->save();
 
         $response = $this->controller->update($request, $user->id);
 
@@ -174,11 +197,12 @@ class UserControllerTest extends TestCase
 
     public function test_update_returns_not_found_when_user_doesnt_exist()
     {
+        $this->userRepositoryMock->shouldReceive('findById')
+            ->with(999)
+            ->andReturn(null);
         $request = new UpdateRequest();
         $request->merge(['name' => 'New Name']);
-
         $response = $this->controller->update($request, 999);
-
         $responseData = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('error', $responseData);
         $this->assertEquals('User not found.', $responseData['error']);

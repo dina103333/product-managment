@@ -204,7 +204,7 @@ class UserFeatureTest extends TestCase
 
         $response->assertStatus(404)
                 ->assertJson([
-                    'error' => 'user not found.',
+                    'error' => 'User not found.',
                 ]);
     }
 

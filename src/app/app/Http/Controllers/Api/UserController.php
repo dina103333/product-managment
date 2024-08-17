@@ -14,11 +14,18 @@ use App\Http\Requests\Api\ResetPasswordRequest;
 use App\Http\Requests\Api\UpdateRequest;
 use App\Http\Resources\Api\UserResource;
 use App\Traits\ApiResponse;
+use App\Repositories\UserRepositoryInterface;
 
 
 class UserController extends Controller
 {
     use ApiResponse;
+    protected $userRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
 
     public function register(RegisterUserRequest $request)
     {
@@ -59,37 +66,33 @@ class UserController extends Controller
 
     public function show($id)
     {
-        try {
-            $user = User::findOrFail($id);
-
-            return $this->successResponse(UserResource::make($user),'Data retreved successfully', 201);
-        } catch (\Exception $e) {
+        $user = $this->userRepository->findById($id);
+        if (!$user) {
             return $this->notFoundResponse('User not found.');
         }
+        return $this->successResponse(UserResource::make($user), 'Data retrieved successfully', 201);
     }
 
     public function update(UpdateRequest $request, $id)
     {
-        try {
-            $user = User::findOrFail($id);
-            $user->update($request->all());
-
-            return $this->successResponse(UserResource::make($user),'Data updated successfully', 201);
-        } catch (\Exception $e) {
+        $user = $this->userRepository->findById($id);
+        if (!$user) {
             return $this->notFoundResponse('User not found.');
         }
+        $this->userRepository->update($user, $request->all());
+
+        return $this->successResponse(UserResource::make($user), 'Data updated successfully', 201);
     }
 
     public function destroy($id)
     {
-        try {
-            $user = User::findOrFail($id);
-            $user->delete();
-
-            return $this->successResponse(null,'User deleted successfully', 200);
-        } catch (\Exception $e) {
-            return $this->notFoundResponse('user not found.');
+        $user = $this->userRepository->findById($id);
+        if (!$user) {
+            return $this->notFoundResponse('User not found.');
         }
+        $this->userRepository->delete($user);
+
+        return $this->successResponse(null, 'User deleted successfully', 200);
     }
     
 }

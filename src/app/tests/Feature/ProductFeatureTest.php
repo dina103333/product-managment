@@ -111,7 +111,7 @@ class ProductFeatureTest extends TestCase
 
         $response->assertStatus(201)
                 ->assertJson([
-                    'message' => 'Data retreved successfully',
+                    'message' => 'Data retrieved successfully',
                     'data' => [
                         'id' => $product->id,
                     ],
