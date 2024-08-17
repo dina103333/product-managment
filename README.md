@@ -7,6 +7,7 @@ This is an API designed for managing users and products. The system is built usi
 
 ## Technology Used
 
+- Docker.
 - Laravel.
 - Repository Pattern
     - Abstracts the data access layer from the rest of the application and provides a clean separation of concerns.
