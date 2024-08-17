@@ -30,12 +30,6 @@ WORKDIR /var/www/html
 # Copy existing application directory contents
 COPY ./src/app /var/www/html
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data ./src/app /var/www/html
-
-# Change current user to www-data
-USER www-data
-
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
 CMD ["php-fpm"]
