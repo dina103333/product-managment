@@ -65,3 +65,10 @@ services:
             - "9000:9000"
         networks :
             - laravel
+        command: >
+            sh -c "composer install &&
+                    cp .env.example .env &&
+                    php artisan key:generate &&
+                    php artisan migrate:fresh --seed &&
+                    php artisan jwt:secret &&
+                    php-fpm"
