@@ -19,15 +19,10 @@ This is an API designed for managing users and products. The system is built usi
 ### Running the Project
 
 1. Clone the repository to your local machine using `git clone`.
-2. Start the local development server using `docker compose up`.
-3. install the required dependencies by running `docker-compose exec php composer install`.
-4. Create a copy of the `.env.example` file and name it `.env` run`docker-compose exec php cp .env.example .env`.
-5. Generate Laravel application key run `docker-compose exec php php artisan key:generate`.
-6. Run the migrations and seed the database using `docker-compose exec php php artisan migrate:fresh --seed`.
 
 ### Running the Test Cases
 
-1. Run the test cases using `docker-compose exec php php artisan test`.
+1. Run the test cases using `docker compose exec php php artisan test`.
 
 # API Documentation
 
